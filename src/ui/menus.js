@@ -106,6 +106,7 @@ export class Menus {
     this._captureCleanup?.();
     this._captureCleanup = null;
     this.sheet.innerHTML = html;
+    this.root.dataset.screen = name;
     this.root.inert = false;
     this.root.setAttribute('aria-hidden', 'false');
     this.root.classList.add('on');
@@ -268,28 +269,59 @@ export class Menus {
     const next = s.nextUnlock();
     const daily = dailySeedInfo();
     this._show(`
-      <div class="title-block">
-        <div class="kicker">THE LIBRARIAN</div>
-        <h1>THE LIBRARIAN <span style="font-size:.62em">II</span></h1>
-        <div class="sub">“Look, Ma, I Could Read Good”</div>
+      <div class="main-menu">
+        <div class="menu-atmosphere" aria-hidden="true">
+          <span class="menu-magic-glow"></span>
+          <span class="menu-motes"></span>
+          <i class="menu-spark spark-one"></i>
+          <i class="menu-spark spark-two"></i>
+          <i class="menu-spark spark-three"></i>
+          <i class="menu-spark spark-four"></i>
+        </div>
+        <main class="main-menu-copy">
+          <div class="title-block">
+            <div class="kicker">A 3D LIBRARY ROGUELITE</div>
+            <h1 aria-label="The Librarian 2">
+              <span class="title-the">THE</span>
+              <span class="title-name">LIBRARIAN</span>
+              <span class="title-number" aria-hidden="true">II</span>
+            </h1>
+            <div class="sub">“Look, Ma, I Could Read Good”</div>
+            <p class="main-premise">FIFTEEN MINUTES. ONE LIBRARY. FAR TOO MANY CHILDREN.</p>
+          </div>
+
+          <div class="menu-actions main-actions">
+            <button class="btn primary" data-a="play" aria-label="BEGIN A SHIFT">
+              BEGIN A SHIFT<small>CHOOSE YOUR LIBRARIAN AND CLOCK IN</small>
+            </button>
+            <button class="btn daily" data-a="daily" aria-label="DAILY SHIFT — ${daily.label}, SAME FLOOR FOR EVERYONE">
+              <span aria-hidden="true">▣</span> DAILY SHIFT<small>${daily.label} · SAME FLOOR FOR EVERYONE</small>
+            </button>
+            <div class="main-utility-grid">
+              <button class="btn" data-a="seed">PLAY A SEED<small>RECREATE A FLOOR</small></button>
+              <button class="btn" data-a="levels">CHOOSE A BRANCH<small>${s.unlockedThemes().length} OF ${THEME_ORDER.length} UNLOCKED</small></button>
+              <button class="btn" data-a="shop">STAFF DEVELOPMENT<small>${s.cards} CARDS TO SPEND</small></button>
+              <button class="btn ghost" data-a="settings">SETTINGS<small>CONTROLS · AUDIO · ACCESS</small></button>
+            </div>
+          </div>
+
+          <footer class="main-menu-footer">
+            <div class="stats-strip main-stats" aria-label="Career statistics">
+              <div class="stat"><div class="v">${s.data.runs}</div><div class="k">SHIFTS</div></div>
+              <div class="stat"><div class="v">${s.data.wins}</div><div class="k">SURVIVED</div></div>
+              <div class="stat"><div class="v">${s.data.bestScore.toLocaleString()}</div><div class="k">BEST SCORE</div></div>
+              <div class="stat"><div class="v">${Math.floor(s.lifetimeXP).toLocaleString()}</div><div class="k">LIFETIME XP</div></div>
+            </div>
+            ${next ? `<div class="unlock-note main-unlock">${next.theme.icon} <b>${next.theme.name}</b> unlocks in ${next.remainingText ?? `${Math.ceil(next.remaining).toLocaleString()} more lifetime XP`}</div>` : ''}
+            <div class="hint-row main-hint">${randomTip(this.game)}</div>
+          </footer>
+        </main>
+
+        <div class="main-scene-tag" aria-hidden="true">
+          <span>THE GRAND LIBRARY</span>
+          <b>SHELVE · SURVIVE · CLOCK OUT</b>
+        </div>
       </div>
-      <div class="rule"></div>
-      <div class="menu-actions">
-        <button class="btn primary" data-a="play">BEGIN A SHIFT</button>
-        <button class="btn daily" data-a="daily">📅 DAILY SHIFT<small>${daily.label} · SAME FLOOR FOR EVERYONE</small></button>
-        <button class="btn" data-a="seed">PLAY A SEED<small>REPLAY A COPIED FLOOR OR SHARE ONE WITH A FRIEND</small></button>
-        <button class="btn" data-a="levels">CHOOSE A BRANCH<small>${s.unlockedThemes().length} of ${THEME_ORDER.length} unlocked</small></button>
-        <button class="btn" data-a="shop">STAFF DEVELOPMENT<small>${s.cards} library cards to spend</small></button>
-        <button class="btn ghost" data-a="settings">SETTINGS</button>
-      </div>
-      <div class="stats-strip">
-        <div class="stat"><div class="v">${s.data.runs}</div><div class="k">SHIFTS</div></div>
-        <div class="stat"><div class="v">${s.data.wins}</div><div class="k">SURVIVED</div></div>
-        <div class="stat"><div class="v">${s.data.bestScore.toLocaleString()}</div><div class="k">BEST SCORE</div></div>
-        <div class="stat"><div class="v">${Math.floor(s.lifetimeXP).toLocaleString()}</div><div class="k">LIFETIME XP</div></div>
-      </div>
-      ${next ? `<div class="unlock-note">${next.theme.icon} <b>${next.theme.name}</b> unlocks in ${next.remainingText ?? `${Math.ceil(next.remaining).toLocaleString()} more lifetime XP`}</div>` : ''}
-      <div class="hint-row">${randomTip(this.game)}</div>
     `, 'main');
 
     this._click('[data-a]', (el) => {

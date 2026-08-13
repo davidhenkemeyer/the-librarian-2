@@ -16,14 +16,17 @@ test('Wolfe data keeps the high-signal reference features', () => {
   assert.equal(wolfe.style.face, 'broad');
   assert.equal(wolfe.style.eyeDetail, true);
   assert.equal(wolfe.style.brows, 'thick');
-  assert.equal(wolfe.style.beard, 'saltPepper');
-  assert.equal(wolfe.style.hat, 'flatCap');
-  assert.equal(wolfe.style.hatLogo, 'geometric');
+  assert.equal(wolfe.style.beard, 'full');
+  assert.equal(wolfe.style.hat, 'cap');
+  assert.equal(wolfe.style.hatLogo, 'openBook');
   assert.equal(wolfe.style.overshirt, true);
-  assert.equal(wolfe.matMap.torso, 'charcoalFlannel');
-  assert.equal(wolfe.colors.hat, 0x101216);
-  assert.equal(wolfe.colors.badge, 0xf4f1e8);
-  assert.equal(wolfe.colors.eye, 0x8da8b4);
+  assert.equal(wolfe.style.boots, true);
+  assert.equal(wolfe.matMap.torso, 'flannel');
+  assert.equal(wolfe.colors.hat, 0x8f252d);
+  assert.equal(wolfe.colors.badge, 0xf7f0de);
+  assert.equal(wolfe.colors.eye, 0x3b2418);
+  assert.equal(wolfe.colors.pants, 0x315985);
+  assert.equal(wolfe.colors.shoe, 0x4b2d1f);
   assert.notEqual(wolfe.colors.beard, wolfe.colors.beardAccent);
 });
 
@@ -47,7 +50,7 @@ test('Wolfe likeness meshes attach to the head and torso pose chains', () => {
   const wolfe = CHARACTERS.wolfe;
   const scene = new THREE.Scene();
   const mats = Object.fromEntries([
-    'cloth', 'skin', 'rubber', 'hair', 'metal', 'charcoalFlannel',
+    'cloth', 'skin', 'rubber', 'hair', 'metal', 'flannel',
   ].map((key) => [key, new THREE.MeshBasicMaterial()]));
   const model = new SoloCharacter(scene, mats, wolfe);
 

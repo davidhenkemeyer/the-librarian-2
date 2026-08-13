@@ -176,7 +176,7 @@ export function buildBodyGeometry(p, style = {}) {
     hair = 'short', glasses = false, apron = false, cardigan = false,
     antenna = false, hat = null, hatLogo = null, beard = null,
     sleeves = 'short', face = null, eyeDetail = false, brows = null,
-    overshirt = false,
+    overshirt = false, boots = false,
   } = style;
   const g = {};
 
@@ -315,21 +315,32 @@ export function buildBodyGeometry(p, style = {}) {
 
   // Ball cap. Kept separate from the hair so it takes its own color.
   if (hat === 'cap') {
-    // The brim line sits well above the eyes (which are at ~1.12r) or the cap
-    // reads as a blindfold.
-    const crown = sphere(r * 1.06, 18, 12, 0, r * 1.42, -r * 0.04);
-    crown.scale(1, 0.78, 1);
+    // Scale before translating so the crown stays above the eyes. The broad,
+    // structured front and long brim reproduce Wolfe's low burgundy ball cap
+    // without letting it collapse into a visor from the gameplay camera.
     g.hat = mergeParts([
-      crown,
-      cyl(r * 1.05, r * 1.08, r * 0.26, 18, 0, r * 1.4, -r * 0.04),
-      // Peak: wide, flat, tipped down at the front.
-      box(r * 1.82, r * 0.1, r * 1.2, 0, r * 1.44, r * 0.88, -0.16, 0, 0, r * 0.045),
-      sphere(r * 0.12, 8, 6, 0, r * 2.02, -r * 0.04),
+      ellipsoid(r * 1.05, 1.04, 0.62, 0.98, 0, r * 1.7, -r * 0.08),
+      cyl(r * 1.02, r * 1.08, r * 0.25, 20, 0, r * 1.43, -r * 0.05),
+      box(r * 1.96, r * 0.105, r * 1.4,
+        0, r * 1.44, r * 0.94, -0.07, 0, 0, r * 0.045),
+      sphere(r * 0.105, 8, 6, 0, r * 2.34, -r * 0.08),
     ]);
-    // A pale badge on the front panel, like the logo on the cap in the photo.
-    g.hatBadge = mergeParts([
-      box(r * 0.4, r * 0.4, r * 0.09, 0, r * 1.55, r * 0.94, 0, 0, 0, r * 0.05),
-    ]);
+
+    if (hatLogo === 'openBook') {
+      // Circular badge with two canted pages and a central spine. It stays
+      // readable as the white book-like mark in the reference at card size.
+      const ring = new THREE.TorusGeometry(r * 0.28, r * 0.038, 5, 16);
+      ring.translate(0, r * 1.78, r * 0.987);
+      g.hatLogo = mergeParts([
+        ring,
+        box(r * 0.19, r * 0.22, r * 0.04,
+          -r * 0.105, r * 1.76, r * 0.994, 0, 0, -0.16, r * 0.025),
+        box(r * 0.19, r * 0.22, r * 0.04,
+          r * 0.105, r * 1.76, r * 0.994, 0, 0, 0.16, r * 0.025),
+        box(r * 0.035, r * 0.22, r * 0.045,
+          0, r * 1.75, r * 1.006, 0, 0, 0, r * 0.012),
+      ]);
+    }
   } else if (hat === 'flatCap') {
     // Structured black crown and a long, genuinely flat brim. The crown uses
     // the corrected scale-then-translate helper above, keeping it above the
@@ -367,17 +378,31 @@ export function buildBodyGeometry(p, style = {}) {
   // Beard: a jaw-hugging mass plus a mustache. Reads at gameplay distance,
   // which is all it needs to do.
   if (beard === 'full') {
-    // Sits below the nose (~0.95r) and behind its tip, so the face still reads.
-    const chin = sphere(r * 0.6, 14, 12, 0, r * 0.36, r * 0.46);
-    chin.scale(1.22, 1.12, 1.02);
+    // Separate cheeks, squared chin, sideburns, and split moustache keep the
+    // reference's large dark beard silhouette without swallowing the nose.
     g.beard = mergeParts([
-      chin,
-      box(r * 1.5, r * 0.8, r * 1.52, 0, r * 0.5, r * 0.2, 0, 0, 0, r * 0.32),
-      // Sideburns running up to the hairline.
-      box(r * 0.3, r * 0.72, r * 0.62, -r * 0.84, r * 0.94, r * 0.06, 0, 0, 0, r * 0.13),
-      box(r * 0.3, r * 0.72, r * 0.62, r * 0.84, r * 0.94, r * 0.06, 0, 0, 0, r * 0.13),
-      // Moustache, tucked just under the nose.
-      box(r * 0.9, r * 0.22, r * 0.3, 0, r * 0.8, r * 0.9, 0, 0, 0, r * 0.09),
+      ellipsoid(r, 0.82, 0.69, 0.64, 0, r * 0.3, r * 0.4),
+      ellipsoid(r, 0.55, 0.55, 0.48, -r * 0.49, r * 0.58, r * 0.48),
+      ellipsoid(r, 0.55, 0.55, 0.48, r * 0.49, r * 0.58, r * 0.48),
+      box(r * 1.15, r * 0.42, r * 0.5,
+        0, r * 0.14, r * 0.42, 0, 0, 0, r * 0.16),
+      box(r * 0.27, r * 0.73, r * 0.5,
+        -r * 0.84, r * 0.92, r * 0.08, 0, 0, 0, r * 0.11),
+      box(r * 0.27, r * 0.73, r * 0.5,
+        r * 0.84, r * 0.92, r * 0.08, 0, 0, 0, r * 0.11),
+      box(r * 0.62, r * 0.21, r * 0.29,
+        -r * 0.26, r * 0.8, r * 0.92, 0, 0, 0.13, r * 0.08),
+      box(r * 0.62, r * 0.21, r * 0.29,
+        r * 0.26, r * 0.8, r * 0.92, 0, 0, -0.13, r * 0.08),
+    ]);
+    // Warm-brown facets add volume without turning the beard gray.
+    g.beardAccent = mergeParts([
+      box(r * 0.1, r * 0.39, r * 0.08,
+        -r * 0.28, r * 0.28, r * 1.02, 0, 0, -0.08, r * 0.03),
+      box(r * 0.11, r * 0.48, r * 0.08,
+        0, r * 0.21, r * 1.04, 0, 0, 0.02, r * 0.03),
+      box(r * 0.09, r * 0.35, r * 0.08,
+        r * 0.28, r * 0.3, r * 1.01, 0, 0, 0.08, r * 0.03),
     ]);
   } else if (beard === 'saltPepper') {
     // Separate cheek, chin and mustache volumes preserve a visible nose and
@@ -433,9 +458,15 @@ export function buildBodyGeometry(p, style = {}) {
   const legR = p.legR;
   g.legU = mergeParts([cyl(legR, legR * 0.85, p.legU, 10, 0, -p.legU / 2, 0), sphere(legR * 1.02, 10, 8, 0, 0, 0)]);
   g.legL = mergeParts([cyl(legR * 0.85, legR * 0.66, p.legL, 10, 0, -p.legL / 2, 0), sphere(legR * 0.88, 10, 8, 0, 0, 0)]);
-  g.shoe = mergeParts([
-    box(legR * 2.0, legR * 0.9, legR * 3.2, 0, -legR * 0.3, legR * 0.7, 0, 0, 0, legR * 0.35),
-  ]);
+  const shoeParts = [
+    box(legR * 2.0, legR * 0.9, legR * 3.2,
+      0, -legR * 0.3, legR * 0.7, 0, 0, 0, legR * 0.35),
+  ];
+  if (boots) {
+    shoeParts.push(box(legR * 1.82, legR * 1.65, legR * 1.75,
+      0, legR * 0.38, 0, 0, 0, 0, legR * 0.28));
+  }
+  g.shoe = mergeParts(shoeParts);
 
   for (const k of Object.keys(g)) if (g[k]) ensureColorAttr(g[k]);
   return g;

@@ -41,9 +41,9 @@ that changes routing without making one a strict upgrade.
 
 * **Marion**, Head Librarian — +0.35 m pickup reach and +0.2 m filing reach,
   but one fewer carrying slot.
-* **Wolfe**, Weekend Shift — the broad-faced, blue-gray-eyed librarian in the
-  black logo cap and charcoal plaid overshirt; two extra carrying slots, but
-  moves 3% slower.
+* **Wolfe**, Weekend Shift — the broad-faced, dark-bearded librarian in the
+  burgundy logo cap, red-and-black flannel, blue jeans, and brown boots; two
+  extra carrying slots, but moves 3% slower.
 
 The select screen renders the actual in-game rig into each card, so the
 portraits can never drift from the models.

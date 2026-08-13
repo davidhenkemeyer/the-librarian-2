@@ -202,8 +202,8 @@ export function buildMaterials(theme) {
       });
     })(),
 
-    // Wolfe's overshirt matches the black/charcoal plaid in his reference
-    // instead of sharing the brighter red buffalo plaid.
+    // Alternate neutral plaid retained for future wardrobes. Wolfe uses the
+    // red-and-black `flannel` material above to match his reference.
     charcoalFlannel: (() => {
       const t = TX.plaid({ base: '#30343a', band: '#0d0f12', accent: '#89919a' }).map.clone();
       t.needsUpdate = true;

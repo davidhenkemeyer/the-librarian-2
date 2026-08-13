@@ -500,16 +500,17 @@ not erase the character trait.
 
 - **Marion**, Head Librarian — 1.74 m, glasses, hair bun, purple cardigan;
   +0.35 m pickup radius, +0.2 m return radius, −1 carrying slot.
-- **Wolfe**, Weekend Shift — 1.82 m, chunk 1.12, broad face, layered blue-gray
-  eyes, thick brows, a full salt-and-pepper beard, black flat-brim cap with a
-  white geometric mark, open charcoal/black plaid overshirt (long sleeves),
-  dark jeans, and brown-black boots; +2 carrying slots, −3% movement speed.
+- **Wolfe**, Weekend Shift — 1.80 m, chunk 1.18, broad face, dark eyes, thick
+  brows, a full dark-brown squared beard and moustache, burgundy long-brim ball
+  cap with a white circular book mark, open red-and-black plaid overshirt (long
+  sleeves), dark undershirt, medium-blue jeans, and brown boots; +2 carrying
+  slots, −3% movement speed.
 
-Wolfe uses `matMap: { torso: 'charcoalFlannel', armU: 'charcoalFlannel',
-armL: 'charcoalFlannel' }` and `shirt: 0xffffff` so the procedural plaid texture
-supplies the color rather than a flat tint. His face, beard accents, cap logo,
-open-shirt panel, collar, and buttons are separate procedural meshes so the
-reference cues survive the elevated gameplay camera and the character portrait.
+Wolfe uses `matMap: { torso: 'flannel', armU: 'flannel', armL: 'flannel' }` and
+`shirt: 0xffffff` so the procedural red-and-black plaid texture supplies the
+color rather than a flat tint. His face, warm beard facets, open-book cap logo,
+open-shirt panel, collar, buttons, and boot cuffs are separate procedural forms
+so the reference cues survive the elevated gameplay camera and portrait.
 
 The character-select screen renders the **actual in-game rig** into each card via
 `src/render/portrait.js`, so portraits cannot drift from the models. The choice
@@ -938,9 +939,10 @@ writes 16 world matrices. Channels:
 ### Geometry kit
 
 `buildBodyGeometry(p, style)` assembles body parts from primitives. Style
-options: `hair` (`short | bun | long | spiky | pigtails | bald`), `glasses`,
-`apron`, `cardigan`, `antenna`, `hat: 'cap'`, `beard: 'full'`,
-`sleeves: 'short' | 'long'`.
+options: `hair` (`short | bun | long | spiky | pigtails | bald | underCap`),
+`glasses`, `apron`, `cardigan`, `antenna`, `hat` (`cap | flatCap`), `hatLogo`
+(`openBook | geometric`), `beard` (`full | saltPepper`), `overshirt`, `boots`,
+and `sleeves` (`short | long`).
 
 The cap and beard are **separate geometries** from the hair so they can take
 their own colors and materials.

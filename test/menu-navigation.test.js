@@ -147,6 +147,7 @@ test('only an open overlay participates in accessibility and focus navigation', 
     },
     root: {
       inert: true,
+      dataset: {},
       setAttribute: (name, value) => attrs.push([name, value]),
       classList: { add() {} },
     },
@@ -156,6 +157,7 @@ test('only an open overlay participates in accessibility and focus navigation', 
 
   Menus.prototype._show.call(context, '<button>Resume</button>', 'pause');
   assert.equal(context.root.inert, false);
+  assert.equal(context.root.dataset.screen, 'pause');
   assert.deepEqual(attrs, [['aria-hidden', 'false']]);
   Object.defineProperty(globalThis, 'requestAnimationFrame', { configurable: true, value: originalRAF });
 });
@@ -166,7 +168,7 @@ test('navigating away from Settings cancels an active key-remap capture', () => 
   Object.defineProperty(globalThis, 'requestAnimationFrame', { configurable: true, value: () => 1 });
   const context = {
     sheet: { innerHTML: '', classList: { toggle() {} }, scrollTop: 0, style: {}, offsetHeight: 1 },
-    root: { inert: false, setAttribute() {}, classList: { add() {}, contains: () => false } },
+    root: { inert: false, dataset: {}, setAttribute() {}, classList: { add() {}, contains: () => false } },
     backBtn: { classList: { toggle() {} } },
     _captureCleanup: () => calls.push('cancel-capture'),
     _applyAccessibilitySettings() {},
@@ -175,7 +177,53 @@ test('navigating away from Settings cancels an active key-remap capture', () => 
   Menus.prototype._show.call(context, '<button>Play</button>', 'main');
   assert.deepEqual(calls, ['cancel-capture']);
   assert.equal(context._captureCleanup, null);
+  assert.equal(context.root.dataset.screen, 'main');
   Object.defineProperty(globalThis, 'requestAnimationFrame', { configurable: true, value: originalRAF });
+});
+
+test('main menu renders the cinematic layout and keeps all action routes', () => {
+  let rendered = null;
+  let actionHandler = null;
+  const calls = [];
+  const context = {
+    game: {
+      save: {
+        nextUnlock: () => null,
+        unlockedThemes: () => ['library'],
+        cards: 7,
+        lifetimeXP: 42,
+        data: { runs: 3, wins: 1, bestScore: 1200 },
+      },
+      input: { usingGamepad: false, bindingFor: () => 'KeyA' },
+    },
+    _show: (html, name) => { rendered = { html, name }; },
+    _click: (selector, handler) => {
+      assert.equal(selector, '[data-a]');
+      actionHandler = handler;
+    },
+    showCharacterSelect: (theme) => calls.push(['play', theme]),
+    showLevels: (options) => calls.push(['levels', options?.challenge || null]),
+    showSeedSetup: () => calls.push(['seed']),
+    showShop: () => calls.push(['shop']),
+    showSettings: (message, screen) => calls.push(['settings', message, screen]),
+  };
+
+  Menus.prototype.showMain.call(context);
+  assert.equal(rendered.name, 'main');
+  assert.match(rendered.html, /class="main-menu"/);
+  assert.match(rendered.html, /aria-label="The Librarian 2"/);
+  assert.match(rendered.html, /class="menu-atmosphere" aria-hidden="true"/);
+  for (const action of ['play', 'daily', 'seed', 'levels', 'shop', 'settings']) {
+    assert.match(rendered.html, new RegExp(`data-a="${action}"`));
+  }
+
+  for (const action of ['play', 'daily', 'seed', 'levels', 'shop', 'settings']) {
+    actionHandler({ dataset: { a: action } });
+  }
+  assert.deepEqual(calls.map(([name]) => name), ['play', 'levels', 'seed', 'levels', 'shop', 'settings']);
+  assert.deepEqual(calls[0], ['play', 'library']);
+  assert.deepEqual(calls[1], ['levels', 'daily']);
+  assert.deepEqual(calls.at(-1), ['settings', null, 'main']);
 });
 
 test('a stale remap timeout cannot orphan a newer capture listener', () => {
