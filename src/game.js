@@ -325,11 +325,37 @@ export class Game {
     this.progression.onShelved();
     this.audio.play('shelve', { pan: this._panFor(bay.wx, bay.wz), rate: 0.95 + Math.min(r.combo, 12) * 0.045 });
     if (r.combo > 1) this.audio.play('combo', { step: r.combo });
-    this.fx.sparkle(bay.wx + bay.nx * 0.3, bay.run.height * 0.5, bay.wz + bay.nz * 0.3, 0xffe9b0, 8);
+    const candy = this.player?.character?.candy;
+    if (candy) this._candyShelve(bay, r);
+    else this.fx.sparkle(bay.wx + bay.nx * 0.3, bay.run.height * 0.5, bay.wz + bay.nz * 0.3, 0xffe9b0, 8);
     this.level.refreshBay(bay);
     this.hud.popup(bay.wx, bay.run.height * 0.7, bay.wz, r.combo > 1 ? `+${Math.round(10 * mult)} ×${r.combo}` : `+10`, '#ffd77a');
     this.events.emit('shelved', { bay, combo: r.combo });
     if (!r.tutorialActive) this.branchMechanics?.onShelved(it, bay);
+  }
+
+  // Kelly easter egg: every shelve throws M&M-colored candy, and every tenth
+  // one she "finds" an M&M in the returns slot. Purely cosmetic bragging rights.
+  _candyShelve(bay, r) {
+    const colors = this.player.character.candy;
+    this.fx.burst(bay.wx + bay.nx * 0.4, bay.run.height * 0.55, bay.wz + bay.nz * 0.4, 14,
+      { speed: 3.2, color: colors, life: 0.9, size: 0.17, grav: -7, up: 1.2 });
+    r.mms = (r.mms || 0) + 1;
+    if (r.mms % 10 !== 0) return;
+    const eaten = r.mms / 10;
+    const lines = [
+      'Found an M&M in the returns slot. Ate it.',
+      'A green M&M! Kelly has no comment.',
+      'Red M&Ms go in 641.853 — Candy.',
+      'Sugar rush intensifies.',
+      'Someone left M&Ms in a hollowed-out dictionary. Confiscated. Eaten.',
+      'Brown M&M. The control group.',
+      'Blue M&M. Filed under "Delicious, non-fiction."',
+      'M&Ms do not go in the book drop. Kelly checked. Twice.',
+    ];
+    this.hud.popup(bay.wx, bay.run.height * 0.95, bay.wz, '+1 M&M 🍬', '#ff6fb1');
+    this.hud.toast(`🍬 ${lines[(eaten - 1) % lines.length]} (${eaten} eaten)`);
+    this.fx.ring(this.player.x, 0.05, this.player.z, { r0: 0.3, r1: 3.2, dur: 0.5, color: colors[(eaten - 1) % colors.length] });
   }
 
   onBayChanged(bay) { this.level.refreshBay(bay); }
