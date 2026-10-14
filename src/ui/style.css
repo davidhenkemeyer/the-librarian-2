@@ -706,7 +706,7 @@ select:focus-visible, summary:focus-visible,
 .level-card .lock { position: absolute; inset: auto 0 0 0; padding: 7px; background: rgba(0,0,0,.6); font-size: calc(10px * var(--ui-text-scale)); letter-spacing: .14em; text-align: center; font-weight: 700; }
 
 /* Character select */
-.chars { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; max-width: 720px; margin: 0 auto; }
+.chars { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; max-width: 1040px; margin: 0 auto; }
 .char-card {
   position: relative; padding: 18px 20px 22px; border-radius: 16px; cursor: pointer;
   background: linear-gradient(180deg, rgba(30,21,12,.94), rgba(13,9,5,.94));
