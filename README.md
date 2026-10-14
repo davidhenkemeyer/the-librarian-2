@@ -44,6 +44,11 @@ that changes routing without making one a strict upgrade.
 * **Wolfe**, Weekend Shift — the broad-faced, dark-bearded librarian in the
   burgundy logo cap, red-and-black flannel, blue jeans, and brown boots; two
   extra carrying slots, but moves 3% slower.
+* **Kelly**, Speed Shelver — black ponytail with a pink scrunchie, gold hoops,
+  purple tee and white sneakers; an M&M-powered sugar rush
+  moves her 8% faster, but 0.2 m less pickup reach.
+  Easter egg: her filing sparkle is M&M candy, and every tenth book earns her
+  an M&M and a toast.
 
 The select screen renders the actual in-game rig into each card, so the
 portraits can never drift from the models.
