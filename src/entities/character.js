@@ -176,7 +176,7 @@ export function buildBodyGeometry(p, style = {}) {
     hair = 'short', glasses = false, apron = false, cardigan = false,
     antenna = false, hat = null, hatLogo = null, beard = null,
     sleeves = 'short', face = null, eyeDetail = false, brows = null,
-    overshirt = false, boots = false,
+    overshirt = false, boots = false, scrunchie = false, earrings = false,
   } = style;
   const g = {};
 
@@ -295,6 +295,14 @@ export function buildBodyGeometry(p, style = {}) {
     hairParts.push(cyl(r * 0.16, r * 0.16, r * 0.9, 8, r * 1.3, r * 0.85, -r * 0.35, 0.2, 0, -0.3));
   } else if (hair === 'bald') {
     hairParts.push(box(r * 2.0, r * 0.35, r * 1.4, 0, r * 1.3, -r * 0.5, 0, 0, 0, r * 0.15));
+  } else if (hair === 'ponytail') {
+    // A swept-back scalp cap, a little fringe, and a high bouncy tail that
+    // reads clearly from the elevated gameplay camera.
+    hairParts.push(sphere(r * 1.06, 18, 14, 0, r * 1.08, -r * 0.06));
+    hairParts.push(box(r * 1.5, r * 0.32, r * 0.5, 0, r * 1.58, r * 0.55, -0.35, 0, 0, r * 0.14));
+    // The tail swings off to one side so it peeks out in the front portrait.
+    hairParts.push(ellipsoid(r * 0.42, 1, 1.6, 1, r * 0.3, r * 1.25, -r * 1.2));
+    hairParts.push(cyl(r * 0.42, r * 0.1, r * 1.5, 10, r * 0.95, r * 0.55, -r * 1.05, -0.2, 0, 0.6));
   } else if (hair === 'underCap') {
     // Only the close-cropped back and temples remain visible below the cap.
     // Avoiding a full scalp sphere prevents hair from poking through the crown.
@@ -312,6 +320,15 @@ export function buildBodyGeometry(p, style = {}) {
     hairParts.push(sphere(r * 0.2, 10, 8, r * 0.68, r * 2.62, 0));
   }
   g.hair = hairParts.length ? mergeParts(hairParts) : null;
+
+  // Bright scrunchie where the ponytail gathers, and small hoop earrings.
+  g.scrunchie = scrunchie ? mergeParts([
+    new THREE.TorusGeometry(r * 0.27, r * 0.11, 8, 16).rotateX(-0.2).translate(r * 0.22, r * 1.6, -r * 1.1),
+  ]) : null;
+  g.earrings = earrings ? mergeParts([
+    new THREE.TorusGeometry(r * 0.13, r * 0.03, 6, 14).rotateY(Math.PI / 2).translate(-r * 1.0, r * 0.72, 0),
+    new THREE.TorusGeometry(r * 0.13, r * 0.03, 6, 14).rotateY(Math.PI / 2).translate(r * 1.0, r * 0.72, 0),
+  ]) : null;
 
   // Ball cap. Kept separate from the hair so it takes its own color.
   if (hat === 'cap') {
@@ -527,6 +544,8 @@ export class SoloCharacter {
       hatBadge: mk(this.geo.hatBadge, 'cloth', c.badge),
       hatLogo: mk(this.geo.hatLogo, 'cloth', c.badge),
       glasses: mk(this.geo.glasses, 'metal', 0x8a6a3a),
+      scrunchie: mk(this.geo.scrunchie, 'cloth', c.scrunchie ?? 0xe0457b),
+      earrings: mk(this.geo.earrings, 'metal', c.earring ?? 0xe8c25a),
       armU_L: mk(this.geo.armU, M.armU, M.armU === 'skin' ? c.skin : c.shirt),
       armU_R: mk(this.geo.armU, M.armU, M.armU === 'skin' ? c.skin : c.shirt),
       armL_L: mk(this.geo.armL, M.armL, M.armL === 'skin' ? c.skin : c.shirt),
@@ -570,6 +589,8 @@ export class SoloCharacter {
     put(M.hatBadge, BONE.HEAD);
     put(M.hatLogo, BONE.HEAD);
     put(M.glasses, BONE.HEAD);
+    put(M.scrunchie, BONE.HEAD);
+    put(M.earrings, BONE.HEAD);
     put(M.armU_L, BONE.ARM_U_L); put(M.armU_R, BONE.ARM_U_R);
     put(M.armL_L, BONE.ARM_L_L); put(M.armL_R, BONE.ARM_L_R);
     put(M.hand_L, BONE.HAND_L); put(M.hand_R, BONE.HAND_R);
