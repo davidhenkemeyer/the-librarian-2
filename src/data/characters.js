@@ -68,6 +68,40 @@ export const CHARACTERS = {
     matMap: { torso: 'flannel', armU: 'flannel', armL: 'flannel' },
     swatch: ['#9e2b28', '#315985', '#4b2d1f'],
   },
+
+  kelly: {
+    id: 'kelly',
+    name: 'Kelly',
+    title: 'Speed Shelver',
+    icon: '🍬',
+    blurb: 'Runs entirely on M&Ms. Sorts them by color before eating, and expects the books to be just as organized.',
+    trait: 'Sugar Rush — moves 8% faster, but slightly shorter pickup reach (sticky chocolate fingers).',
+    bonuses: { pickupRadius: -0.2, returnRadius: 0, carrySlots: 0, moveSpeedMul: 1.08 },
+    height: 1.68,
+    chunk: 0.96,
+    style: {
+      hair: 'ponytail',
+      scrunchie: true,
+      earrings: true,
+      eyeDetail: true,
+      sleeves: 'short',
+    },
+    colors: {
+      skin: 0xeab896,
+      shirt: 0x6a3a9a,
+      pants: 0x2a3c62,
+      hair: 0x141012,
+      eyeWhite: 0xf6efe6,
+      eye: 0x3a6b3e,
+      pupil: 0x0b0806,
+      scrunchie: 0xe0457b,
+      earring: 0xe8c25a,
+      shoe: 0xf2f2f2,
+    },
+    // Her shelving sparkle becomes a burst of candy in these colors.
+    candy: [0xd8262e, 0xf47c20, 0xfcd53a, 0x2fa84f, 0x2b6fc6, 0x5a3420],
+    swatch: ['#6a3a9a', '#d8262e', '#fcd53a', '#2b6fc6'],
+  },
 };
 
 export const CHARACTER_LIST = Object.values(CHARACTERS);
